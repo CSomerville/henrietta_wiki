@@ -1,0 +1,10 @@
+{
+  "name": "henrietta_pedia",
+  "version": "0.0.0",
+  "main": "app.js",
+  "author": "Colby Somerville",
+  "license": "MIT",
+  "dependencies": {
+    "sqlite3": "^3.0.5"
+  }
+}
