@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset = "utf8">
+  <title>henriettapedia</title>
+</head>
+<body>
+  <form method="POST" action="/articles">
+    <select name="user">
+      {{#users}}
+        <option value="{{id}}">{{name}}</option>
+      {{/users}}
+    </select>
+    <select name="category">
+      {{#categories}}
+        <option value="{{id}}">{{name}}</option>
+      {{/categories}}
+    </select>
+    <input type="text" name="subject" placeholder="Subject">
+    <textarea type="text" name="content" rows="10" cols="50">Write your article in markdown here.</textarea>
+    <button>Submit</button>
+  </form>
+  <form method="GET" action="/">
+    <button>Cancel</button>
+  </form>
+</body>
+</html>

@@ -4,11 +4,13 @@ var express = require('express');
 var Mustache = require('mustache');
 var marked = require('marked');
 var morgan = require('morgan');
+var bodyParser = require('body-parser');
 
 var db = new sqlite3.Database('./wiki.db')
 var app = express();
 
 app.use(morgan('dev'));
+app.use(bodyParser.urlencoded({extended:false}))
 
 function stripMd(string) {
   return string.replace(/\n?\*?\#/g, "");
@@ -52,6 +54,21 @@ app.get('/categories', function(req, res){
       })
     })
   })
+})
+
+app.get('/articles/new', function(req,res){
+  fs.readFile('./views/new.html', 'utf8', function(err, page){
+    db.all("SELECT * FROM users;", function(err, users){
+      db.all("SELECT * FROM categories;", function(err, categories){
+        res.send(Mustache.render(page, {users: users, categories: categories}))
+      })
+    })
+  })
+})
+
+app.post('/articles', function(req, res){
+  db.run("INSERT INTO articles (creation_date, subject, category_id, content, user_id) VALUES (" + Date.parse(new Date()) + ",'" + req.body.subject + "'," + req.body.category + ",'" + req.body.content.replace(/'/g, "''") + "'," + req.body.user + ");");
+  res.redirect('/');
 })
 
 app.listen(3000, function(){
