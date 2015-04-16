@@ -56,11 +56,35 @@ app.get('/categories', function(req, res){
   })
 })
 
+app.get('/articles/:id', function(req,res){
+  if (req.params.id === 'new') {
+    fs.readFile('./views/new.html', 'utf8', function(err, page){
+      db.all("SELECT * FROM users;", function(err, users){
+        db.all("SELECT * FROM categories;", function(err, categories){
+          res.send(Mustache.render(page, {users: users, categories: categories}));
+        })
+      })
+    })
+  } else {
+    fs.readFile('./views/show.html', 'utf8', function(err, page){
+      db.all("SELECT * FROM articles WHERE id = " + req.params.id + ";", function(err, article){
+        db.all("SELECT name FROM users WHERE id = " + article[0].user_id + ";", function(err, user){
+          article[0]["author"] = user[0].name;
+          marked(article[0].content, function(err, html){
+            article[0]["content"] = html;
+            res.send(Mustache.render(page, article[0]));            
+          })
+        })
+      })
+    })
+  }
+})
+
 app.get('/articles/new', function(req,res){
   fs.readFile('./views/new.html', 'utf8', function(err, page){
     db.all("SELECT * FROM users;", function(err, users){
       db.all("SELECT * FROM categories;", function(err, categories){
-        res.send(Mustache.render(page, {users: users, categories: categories}))
+        res.send(Mustache.render(page, {users: users, categories: categories}));
       })
     })
   })
@@ -70,6 +94,8 @@ app.post('/articles', function(req, res){
   db.run("INSERT INTO articles (creation_date, subject, category_id, content, user_id) VALUES (" + Date.parse(new Date()) + ",'" + req.body.subject + "'," + req.body.category + ",'" + req.body.content.replace(/'/g, "''") + "'," + req.body.user + ");");
   res.redirect('/');
 })
+
+
 
 app.listen(3000, function(){
   console.log("all ears")
