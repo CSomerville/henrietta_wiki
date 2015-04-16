@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>henriettapedia</title>
+</head>
+<body>
+  <a href="articles/new">Compose</a>
+  <form method="GET" action="categories/">
+    <select name="category">
+      {{#categories}}
+        <option value="{{id}}">{{name}}</option>
+      {{/categories}}
+    </select>
+    <button>Browse</button>
+  </form>
+  <ul>
+    {{#articles}}
+    <li>
+      <h2>{{subject}}</h2>
+      <h3>{{author}}</h3>
+      <p>{{content}}</p>
+      <h3>{{category}}</h3>
+    </li>
+    {{/articles}}
+  </ul>
+</body>
+</html>

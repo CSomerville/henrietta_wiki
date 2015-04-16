@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>henriettapedia</title>
+</head>
+<body>
+  <a href="/">Home</a>
+  <ul>
+    {{#articles}}
+    <li>
+      <h2>{{subject}}</h2>
+      <h3>{{author}}</h3>
+      <p>{{content}}</p>
+    </li>
+    {{/articles}}
+  </ul>
+</body>
+</html>
