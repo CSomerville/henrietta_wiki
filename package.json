@@ -5,6 +5,7 @@
   "author": "Colby Somerville",
   "license": "MIT",
   "dependencies": {
+    "marked": "^0.3.3",
     "sqlite3": "^3.0.5"
   }
 }
