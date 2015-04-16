@@ -31,12 +31,17 @@ function markdownify(raw) {
 
 db. serialize(function(){
   db.run("PRAGMA foreign_keys = ON;");
+  db.run("INSERT INTO categories (name) VALUES ('blue-sky thinking');");
+  db.run("INSERT INTO categories (name) VALUES ('issues');");
+  db.run("INSERT INTO categories (name) VALUES ('work-life balance');");
+  db.run("INSERT INTO categories (name) VALUES ('victim development');")
+  db.run("INSERT INTO categories (name) VALUES ('why i love my role');")  
   db.run("INSERT INTO users (name, email, team) VALUES ('henrietta', 'henrietta@henrietta.uh', 'executicution');");
   db.run("INSERT INTO users (name, email, team) VALUES ('adelaide', 'adelaide@henrietta.uh', 'polydenigration');");
   db.run("INSERT INTO users (name, email, team) VALUES ('todd', 'todd@henrietta.uh', 'blood snorkling');");
-  db.run("INSERT INTO articles (creation_date, subject, category, content, user_id) VALUES (" + Date.parse('02/06/2666') + ",'accelerating resource exhaustion', 'blue-sky thinking', '" + markdownify(randStart(ipsumJunk)) +"', 3);")
-  db.run("INSERT INTO articles (creation_date, subject, category, content, user_id) VALUES (" + Date.parse('08/08/2019') + ",'maximizing prosumer battle-royale', 'issues', '" + markdownify(randStart(ipsumJunk)) +"', 2);")
-  db.run("INSERT INTO articles (creation_date, subject, category, content, user_id) VALUES (" + Date.parse('02/06/2666') + ",'make time for nanny interface', 'work-life balance', '" + markdownify(randStart(ipsumJunk)) +"', 3);");
+  db.run("INSERT INTO articles (creation_date, subject, category_id, content, user_id) VALUES (" + Date.parse('02/06/2666') + ",'accelerating resource exhaustion', 1,'" + markdownify(randStart(ipsumJunk)) +"', 3);")
+  db.run("INSERT INTO articles (creation_date, subject, category_id, content, user_id) VALUES (" + Date.parse('08/08/2019') + ",'maximizing prosumer battle-royale', 2, '" + markdownify(randStart(ipsumJunk)) +"', 2);")
+  db.run("INSERT INTO articles (creation_date, subject, category_id, content, user_id) VALUES (" + Date.parse('02/06/2666') + ",'make time for nanny interface', 3, '" + markdownify(randStart(ipsumJunk)) +"', 3);");
   db.run("INSERT INTO edits (edit_date, article_id, user_id) VALUES (" + Date.parse('01/01/3000') + ", 1, 2);");
   db.run("INSERT INTO edits (edit_date, article_id, user_id) VALUES (" + Date.parse('01/03/3000') + ", 1, 2);");
   db.run("INSERT INTO edits (edit_date, article_id, user_id) VALUES (" + Date.parse('02/14/3010') + ", 3, 1);");
