@@ -47,9 +47,10 @@ app.get('/categories', function(req, res){
       db.all("SELECT * FROM articles WHERE category_id = " + req.query.category + ";", function(err, categoryArticles){
         var articles = [];
         categoryArticles.forEach(function(article){
-          db.all("SELECT name FROM users WHERE id = " + article.user_id + ";", function(err, user){
+          db.all("SELECT * FROM users WHERE id = " + article.user_id + ";", function(err, user){
             article["author"] = user[0].name;
             article["content"] = stripMd(article.content.slice(0,150)) + "...";
+            article["user_id"] = user[0].id;
             articles.push(article);
             if (articles.length === categoryArticles.length) res.send(Mustache.render(page, {category: category[0].name, articles: articles})); 
           })
