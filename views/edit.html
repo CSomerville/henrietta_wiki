@@ -8,6 +8,14 @@
   <a href="/">Home</a>
   <h1>{{subject}}</h1>
   <h3>{{author}}</h3>
-  <p>{{{content}}}</p>
+  <form method="POST" action="/articles/{{id}}/?_method=PUT">
+    <textarea type="text" name="content" rows="50" cols="200">{{content}}</textarea>
+    <select name="user">
+      {{#users}}
+        <option value="{{id}}">{{name}}</option>
+      {{/users}}
+    </select>
+    <button>Submit</button>
+  </form>
 </body>
 </html>
