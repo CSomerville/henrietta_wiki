@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>history</title>
+</head>
+<body>
+  <h1>Showing edit history for <a href="/articles/{{id}}">{{subject}}</a></h1>
+  <h3>Created by {{author}} on {{creation_date}}.</h3>
+  <ul>
+    {{#edits}}
+      <li>On {{edit_date}} by {{user}}</li>
+    {{/edits}}
+  </ul>
+</body>
+</html>
