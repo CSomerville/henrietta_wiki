@@ -70,10 +70,23 @@ app.get('/articles/:id', function(req,res){
     fs.readFile('./views/show.html', 'utf8', function(err, page){
       db.all("SELECT * FROM articles WHERE id = " + req.params.id + ";", function(err, article){
         db.all("SELECT name FROM users WHERE id = " + article[0].user_id + ";", function(err, user){
-          article[0]["author"] = user[0].name;
-          marked(article[0].content, function(err, html){
-            article[0]["content"] = html;
-            res.send(Mustache.render(page, article[0]));            
+          db.all("SELECT * FROM edits WHERE article_id = " + req.params.id + " ORDER BY edit_date DESC;", function(err, edits){
+            article[0]["author"] = user[0].name;
+            if (edits[0]) {
+              db.all("SELECT name FROM users WHERE id = " + edits[0].user_id + ";", function(err, edit_user){
+                article[0]["last_edit_date"] = new Date(edits[0].edit_date).toString().slice(0,21);
+                article[0]["last_edit_author"] = edit_user[0].name;
+                marked(article[0].content, function(err, html){
+                  article[0]["content"] = html;
+                  res.send(Mustache.render(page, article[0]));                        
+                })
+              })
+            } else {
+              marked(article[0].content, function(err, html){
+                article[0]["content"] = html;
+                res.send(Mustache.render(page, article[0]));                        
+              })
+            }
           })
         })
       })
