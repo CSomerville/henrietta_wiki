@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{name}}</title>
+</head>
+<body>
+  <h1>{{name}}</h1>
+  <h3>Part of the {{team}} team</h2>
+  <h3>contact: {{email}}</h2>
+  <h2>See what {{name}} has been contributing:</h2>
+  <ul>
+    <ul>
+      {{#articles}}
+    <li>
+      <a href="/articles/{{id}}">
+        <h2>{{subject}}</h2>
+      </a>
+      <h3>{{category}}</h3>
+      <p>{{content}}</p>
+    </li>
+    {{/articles}}
+  </ul>
+</body>
+</html>

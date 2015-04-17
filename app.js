@@ -136,6 +136,28 @@ app.get('/articles/:id/edits', function(req, res){
   })
 })
 
+app.get('/users/:id', function(req, res){
+  fs.readFile('./views/user.html', 'utf8', function(err, page){
+    db.all("SELECT * FROM users WHERE id = " + req.params.id + ";", function(err, user){
+      db.all("SELECT * FROM articles WHERE user_id = " + req.params.id + ";", function(err, userArticles){
+        console.log(userArticles);
+        var articles = [];
+        userArticles.forEach(function(article){
+          db.all("SELECT name FROM categories WHERE id = " + article.category_id + ";", function(err, category){
+            article["category"] = category[0].name;
+            article["content"] = stripMd(article.content.slice(0,150)) + "...";
+            articles.push(article);
+            if (articles.length === userArticles.length) {
+              user[0]["articles"] = articles;
+              res.send(Mustache.render(page, user[0]))
+            }
+          })
+        })
+      })
+    })
+  })
+})
+
 app.post('/articles', function(req, res){
   db.run("INSERT INTO articles (creation_date, subject, category_id, content, user_id) VALUES (" + Date.parse(new Date()) + ",'" + req.body.subject + "'," + req.body.category + ",'" + req.body.content.replace(/'/g, "''") + "'," + req.body.user + ");");
   res.redirect('/');
