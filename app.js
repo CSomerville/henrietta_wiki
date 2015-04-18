@@ -13,9 +13,19 @@ var app = express();
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(methodOverride("_method"));
+app.use(express.static('public'));
 
 function stripMd(string) {
   return string.replace(/\n?\*?\#/g, "");
+}
+
+function assignDivs(articles) {
+  var chars = "abcdefghijklmno".split("");
+  articles.forEach(function(article, index){
+    article.divClass = chars[index%15]
+    article.colorClass = (index%2 === 0) ? "gold" : "green";
+  })
+  return articles;
 }
 
 app.get('/', function(req, res){
@@ -31,7 +41,7 @@ app.get('/', function(req, res){
               article["content"] = stripMd(article.content.slice(0,150)) + "...";
               articles.push(article);
               if (articles.length === recentArticles.slice(0,10).length) {
-                res.send(Mustache.render(page, {categories: categories,articles: articles}));
+                res.send(Mustache.render(page, {categories: categories,articles: assignDivs(articles)}));
               }
             })
           })

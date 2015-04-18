@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>henriettapedia</title>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
   <a href="articles/new">Compose</a>
@@ -14,15 +15,23 @@
     </select>
     <button>Browse</button>
   </form>
+  <div class="whole">
   <ul>
     {{#articles}}
+    <div class="{{colorClass}} {{divClass}}">
+    <div class="top"></div>
+    <div class="rec">
     <li>
       <a href="articles/{{id}}"><h2>{{subject}}</h2></a>
       <a href="users/{{user_id}}"><h3>{{author}}</h3></a>
       <p>{{content}}</p>
       <a href="categories?category={{category_id}}"<h3>{{category}}</h3></a>
     </li>
+    </div>
+    <div class="bottom"></div>
+    </div>
     {{/articles}}
   </ul>
+  </div>
 </body>
 </html>

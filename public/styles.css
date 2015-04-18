@@ -1,0 +1,126 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 2. v2.0 | 20110126
+  License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol, ul {
+  list-style: none;
+}
+blockquote, q {
+  quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+
+*,
+*:before,
+*:after {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+body {
+  background-color: rgba(247,150,169,1);
+}
+
+.whole {
+  font-size: 0;
+}
+
+.gold, .green {
+  float: left;
+  margin-bottom: -95px;
+}
+
+.gold .top {
+  width: 0;
+  border-bottom: 95px solid rgba(255,223,105,1);
+  border-left: 190px solid transparent;
+  border-right: 190px solid transparent;
+}
+.gold .bottom {
+  width: 0;
+  border-top: 95px solid rgba(255,223,105,1);
+  border-left: 190px solid transparent;
+  border-right: 190px solid transparent;
+}
+
+.gold .rec {
+  width: 380px;
+  height: 190px;
+  background-color: rgba(255,223,105,1);
+  display: inline-block;
+  overflow: auto;
+  font-size: 24px;
+}
+
+.green .top {
+  width: 0;
+  border-bottom: 95px solid rgba(112,254,171,1);
+  border-left: 190px solid transparent;
+  border-right: 190px solid transparent;
+}
+.green .bottom {
+  width: 0;
+  border-top: 95px solid rgba(112,254,171,1);
+  border-left: 190px solid transparent;
+  border-right: 190px solid transparent;
+}
+
+.green .rec {
+  width: 380px;
+  height: 190px;
+  background-color: rgba(112,254,171,1);
+  display: inline-block;
+  overflow: auto;
+  font-size: 24px;
+}
+
+
+gold rgba(255,223,105)
+green rgba(112,254,171)
+
+
+.gold.a, .gold.f, .gold.k, .green.a, .green.f, .green.k {
+  clear: left;
+}
+
+.gold.d, .gold.i, .gold.n, .green.d, .green.i, .green.n {
+  margin-left: 190px;
+}
