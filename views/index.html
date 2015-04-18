@@ -18,9 +18,9 @@
     {{#articles}}
     <li>
       <a href="articles/{{id}}"><h2>{{subject}}</h2></a>
-      <h3>{{author}}</h3>
+      <a href="users/{{user_id}}"><h3>{{author}}</h3></a>
       <p>{{content}}</p>
-      <h3>{{category}}</h3>
+      <a href="categories?category={{category_id}}"<h3>{{category}}</h3></a>
     </li>
     {{/articles}}
   </ul>
