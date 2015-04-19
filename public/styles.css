@@ -1,7 +1,6 @@
 /* http://meyerweb.com/eric/tools/css/reset/ 2. v2.0 | 20110126
   License: none (public domain)
 */
-
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -84,6 +83,16 @@ h1 {
   text-align: center;
   font-size: 36px;
   padding-top: 60px;
+  font-family: baskerville;
+}
+
+#submit {
+  text-align: center;
+}
+
+.rec.formfun {
+  text-align: center;
+  line-height: 40px;
 }
 
 .gold, .green {
@@ -91,8 +100,48 @@ h1 {
   margin-bottom: -95px;
 }
 
+input {
+  width: 275px;
+  height: 30px;
+}
+
+textarea {
+  background-color: rgba(255,255,255,0.5);
+  margin-top: 95px;
+  border: none;
+  width: 760px;
+  height: 380px;
+  font-family: baskerville;
+  font-size: 16px;
+}
+
 button:hover, a:hover {
   color: gray;
+}
+
+.articletext {
+  display: inline-block;
+  background-color: rgba(255,255,255,0.5);
+  margin-top: 95px;
+  border: none;
+  width: 760px;
+  font-family: baskerville;
+  font-size: 16px;
+}
+
+.articletext h3 {
+  font-size: 24px;
+  font-style: bold;
+}
+
+.articletext ul {
+  padding: 0 0 0 40px;
+  list-style-type: disc;
+}
+
+.articletext li {
+  display: block;
+
 }
 
 .gold .top {
@@ -153,6 +202,7 @@ button, select {
   background-color: transparent;
   border: none;
   font-size: 16px;
+  font-family: baskerville;
 }
 
 #indexforms {

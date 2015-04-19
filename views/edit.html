@@ -3,22 +3,50 @@
 <head>
   <meta charset = "utf-8">
   <title>edit</title>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <a href="/">Home</a>
-  <h1>{{subject}}</h1>
-  <h3>{{author}}</h3>
-  <form method="POST" action="/articles/{{id}}/?_method=PUT">
-    <textarea type="text" name="content" rows="50" cols="200">{{content}}</textarea>
-    <select name="user">
-      {{#users}}
-        <option value="{{id}}">{{name}}</option>
-      {{/users}}
-    </select>
-    <button>Submit</button>
-  </form>
-  <form method="GET" action="/articles/{{id}}">
-    <button>Cancel</button>
-  </form>
+  <div class="whole">
+    <div class="gold">
+      <div class="top"></div>
+      <div class="rec">
+        <a href="/"><h1>Home</h1></a>
+      </div>
+      <div class="bottom"></div>
+    </div>
+    <div class="green">
+      <div class="top"></div>
+      <div class="rec">
+        <h1>{{subject}}</h1>
+        <h3>by {{author}}</h3>
+      </div>
+      <div class="bottom"></div>
+    </div>
+      <div class="gold">
+        <div class="top"></div>
+        <div class="rec formfun">
+          <form method="POST" action="/articles/{{id}}/?_method=PUT">
+          <h2>Share your changes:</h2>
+          <select name="user">
+            {{#users}}
+              <option value="{{id}}">{{name}}</option>
+            {{/users}}
+          </select>
+          <button><h2>Submit</h2></button>
+        </div>
+        <div class="bottom"></div>
+      </div>
+      <textarea type="text" name="content" rows="50" cols="200">{{content}}</textarea>
+    </form>
+    <div class="green d">
+      <div class="top"></div>
+      <div class="rec formfun">
+      <form method="GET" action="/articles/{{id}}">
+        <button><h1>Cancel</h1></button>
+     </form>
+      </div>
+      <div class="bottom"></div>
+    </div>
+  </div>
 </body>
 </html>

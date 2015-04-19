@@ -3,14 +3,50 @@
 <head>
   <meta charset = "utf-8">
   <title>show</title>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <a href="/">Home</a>
-  <a href="{{id}}/edit">edit</a>
-  <h1>{{subject}}</h1>
-  <h3>{{author}}</h3>
-  <h4>Last edited by {{last_edit_author}} on {{last_edit_date}} <a href="{{id}}/edits">See full edit history</a></h4>
-  <h4>In <a href="/categories/?category={{category_id}}">{{category}}</a></h4>
-  <p>{{{content}}}</p>
+  <div class = "whole">
+    <div class="gold">
+      <div class="top"></div>
+      <div class="rec">
+        <a href="/"><h1>Home</h1></a>
+      </div>
+      <div class="bottom"></div>
+    </div>
+    <div class="green">
+      <div class="top"></div>
+      <div class="rec">
+        <h1>{{subject}}</h1>
+      </div>
+      <div class="bottom"></div>
+    </div>
+    <div class="gold">
+      <div class="top"></div>
+      <div class="rec">
+        <h1>more by <a href="users/{{user_id}}">{{author}}</a><br>  
+        more about <a href="categories/{{category_id}}">{{category}}</a></h1>
+        <a href="/"><h1>Home</h1></a>
+      </div>
+      <div class="bottom"></div>
+    </div>
+    <div class="articletext">
+      {{{content}}}
+    </div>
+    <div class="green d">
+      <div class="top"></div>
+      <div class="rec">
+        <h4>Last edited by {{last_edit_author}} on {{last_edit_date}} <a href="{{id}}/edits">See full edit history</a></h4>
+      </div>
+      <div class="bottom"></div>
+    </div>
+    <div class="gold">
+      <div class="top"></div>
+      <div class="rec">
+        <a href="{{id}}/edit">edit</a>
+      </div>
+      <div class="bottom"></div>
+    </div>
+  </div>
 </body>
 </html>

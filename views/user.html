@@ -3,24 +3,50 @@
 <head>
   <meta charset="utf-8">
   <title>{{name}}</title>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <a href="/">Home</a>
-  <h1>{{name}}</h1>
-  <h3>Part of the {{team}} team</h2>
-  <h3>contact: {{email}}</h2>
-  <h2>See what {{name}} has been contributing:</h2>
-  <ul>
-    <ul>
-      {{#articles}}
-    <li>
-      <a href="/articles/{{id}}">
-        <h2>{{subject}}</h2>
-      </a>
-      <a href="/categories/?category={{category_id}}"><h3>{{category}}</h3></a>
-      <p>{{content}}</p>
-    </li>
-    {{/articles}}
-  </ul>
+  <div class="whole">
+    <div class="gold">
+      <div class="top"></div>
+      <div class="rec">
+        <a href="/"><h1>Home</h1></a>
+      </div>
+      <div class="bottom"></div>
+    </div>
+    <div class="green">
+      <div class="top"></div>
+      <div class="rec">
+        <h1>See what {{name}} has been contributing.</h1>
+      </div>
+      <div class="bottom"></div>
+    </div>
+    <div class="gold">
+      <div class="top"></div>
+      <div class="rec">
+        <h2>Part of the {{team}} team</h2>
+        <h2>contact: {{email}}</h2>
+      </div>
+      <div class="bottom"></div>
+    </div>
+      <ul>
+        {{#articles}}
+          <div class="{{colorClass}} {{divClass}}">
+            <div class="top"></div>
+              <a href="/articles/{{id}}">
+                <div class="rec">
+                  <li>
+                    <h2>{{subject}}</h2>
+                    <h3>{{category}}</h3>
+                    <h4>{{creation_date}}</h4>
+                    <p>{{content}}</p>
+                </li>
+              </div>
+            </a>
+          <div class="bottom"></div>
+       </div>
+      {{/articles}}
+    </ul>
+  </div>
 </body>
 </html>

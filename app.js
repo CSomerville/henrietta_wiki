@@ -169,9 +169,10 @@ app.get('/users/:id', function(req, res){
           db.all("SELECT name FROM categories WHERE id = " + article.category_id + ";", function(err, category){
             article["category"] = category[0].name;
             article["content"] = stripMd(article.content.slice(0,150)) + "...";
+            article["creation_date"] = new Date(article.creation_date).toString().slice(0,21);
             articles.push(article);
             if (articles.length === userArticles.length) {
-              user[0]["articles"] = articles;
+              user[0]["articles"] = assignDivs(articles, 3);
               res.send(Mustache.render(page, user[0]))
             }
           })

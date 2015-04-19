@@ -3,25 +3,46 @@
 <head>
   <meta charset = "utf8">
   <title>henriettapedia</title>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <form method="POST" action="/articles">
-    <select name="user">
-      {{#users}}
-        <option value="{{id}}">{{name}}</option>
-      {{/users}}
-    </select>
-    <select name="category">
-      {{#categories}}
-        <option value="{{id}}">{{name}}</option>
-      {{/categories}}
-    </select>
-    <input type="text" name="subject" placeholder="Subject">
+  <div class="whole">
+    <div class="gold">
+      <div class="top"></div>
+      <div class="rec">
+        <a href="/"><h1>Cancel</h1></a>
+      </div>
+      <div class="bottom"></div>
+    </div>
+    <div class="green">
+      <div class="top"></div>
+      <div class="rec formfun">
+        <form method="POST" action="/articles">
+          <h2>Just</h2>
+          Select Your Username:
+          <select name="user">
+            {{#users}}
+              <option value="{{id}}">{{name}}</option>
+            {{/users}}
+          </select>
+          Article Category:
+          <select name="category">
+            {{#categories}}
+              <option value="{{id}}">{{name}}</option>
+            {{/categories}}
+          </select>
+          <input type="text" name="subject" placeholder="And Subject">
+      </div>
+      <div class="bottom"></div>
+    </div>  
+    <div class="gold">
+      <div class="top"></div>
+      <div class="rec" id="submit"><button><h1>Submit</h1></button>
+      </div>
+      <div class="bottom"></div>
+    </div>    
     <textarea type="text" name="content" rows="10" cols="50">Write your article in markdown here.</textarea>
-    <button>Submit</button>
   </form>
-  <form method="GET" action="/">
-    <button>Cancel</button>
-  </form>
+  </div>
 </body>
 </html>
