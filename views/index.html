@@ -6,30 +6,64 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <a href="articles/new">Compose</a>
-  <form method="GET" action="categories/">
-    <select name="category">
-      {{#categories}}
-        <option value="{{id}}">{{name}}</option>
-      {{/categories}}
-    </select>
-    <button>Browse</button>
-  </form>
   <div class="whole">
+    <div class="gold">
+      <div class="top"></div>
+      <div class="rec">
+        <a href="articles/new"><h1>compose new</h1></a>
+      </div>
+      <div class="bottom"></div>
+    </div>
+    <div class="green">
+      <div class="top"></div>
+      <div class="rec">
+        <h1>henrietta_pedia</h1>
+      </div>
+      <div class="bottom"></div>
+    </div>
+    <div class="gold">
+      <div class="top"></div>
+      <div class="rec" id="indexforms">
+        <h2>Browse by:</h2>
+        <form method="GET" action="categories/">
+          category:
+          <select name="category">
+            {{#categories}}
+              <option value="{{id}}">{{name}}</option>
+            {{/categories}}
+          </select>
+          <button>Browse</button>
+        </form>
+        <h2>Or:</h2>
+        <form method="GET" action="users/">
+          author:
+          <select name="user">
+            {{#users}}
+              <option value="{{id}}">{{name}}</option>
+            {{/users}}
+          </select>
+          <button>Browse</button>
+        </form>
+      </div>
+      <div class="bottom"></div>
+    </div>
   <ul>
     {{#articles}}
-    <div class="{{colorClass}} {{divClass}}">
-    <div class="top"></div>
-    <div class="rec">
-    <li>
-      <a href="articles/{{id}}"><h2>{{subject}}</h2></a>
-      <a href="users/{{user_id}}"><h3>{{author}}</h3></a>
-      <p>{{content}}</p>
-      <a href="categories?category={{category_id}}"<h3>{{category}}</h3></a>
-    </li>
-    </div>
-    <div class="bottom"></div>
-    </div>
+      <div class="{{colorClass}} {{divClass}}">
+        <div class="top"></div>
+        <a href="/articles/{{id}}">
+          <div class="rec">
+            <li>
+              <h2>{{subject}}</h2>
+              <h3>{{author}}</h3>
+              <h3>{{category}}</h3>
+              <h4>{{creation_date}}</h4>
+              <p>{{content}}</p>
+            </li>
+          </div>
+        </a>
+      <div class="bottom"></div>
+      </div>
     {{/articles}}
   </ul>
   </div>

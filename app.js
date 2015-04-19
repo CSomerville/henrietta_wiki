@@ -19,11 +19,11 @@ function stripMd(string) {
   return string.replace(/\n?\*?\#/g, "");
 }
 
-function assignDivs(articles) {
+function assignDivs(articles, offset) {
   var chars = "abcdefghijklmno".split("");
   articles.forEach(function(article, index){
-    article.divClass = chars[index%15]
-    article.colorClass = (index%2 === 0) ? "gold" : "green";
+    article.divClass = chars[(index + offset) % 15];
+    article.colorClass = ((index + offset) % 2 === 0) ? "gold" : "green";
   })
   return articles;
 }
@@ -31,18 +31,21 @@ function assignDivs(articles) {
 app.get('/', function(req, res){
   fs.readFile('./views/index.html', 'utf8', function(err, page){
     db.all("SELECT * FROM categories;", function(err, categories){
-      db.all("SELECT * FROM articles ORDER BY creation_date DESC;", function(err, recentArticles){
-        var articles = [];
-        recentArticles.slice(0,10).forEach(function(article){
-          db.all("SELECT name FROM users WHERE id =" + article.user_id + ";", function(err, user){
-            db.all("SELECT name FROM categories WHERE id =" + article.category_id + ";", function(err, category){
-              article["author"] = user[0].name;
-              article["category"] = category[0].name;
-              article["content"] = stripMd(article.content.slice(0,150)) + "...";
-              articles.push(article);
-              if (articles.length === recentArticles.slice(0,10).length) {
-                res.send(Mustache.render(page, {categories: categories,articles: assignDivs(articles)}));
-              }
+      db.all("SELECT * FROM users;", function(err, users){
+        db.all("SELECT * FROM articles ORDER BY creation_date DESC;", function(err, recentArticles){
+          var articles = [];
+          recentArticles.slice(0,10).forEach(function(article){
+            db.all("SELECT name FROM users WHERE id =" + article.user_id + ";", function(err, user){
+              db.all("SELECT name FROM categories WHERE id =" + article.category_id + ";", function(err, category){
+                article["author"] = user[0].name;
+                article["category"] = category[0].name;
+                article["content"] = stripMd(article.content.slice(0,150)) + "...";
+                article["creation_date"] = new Date(article.creation_date).toString().slice(0,21);
+                articles.push(article);
+                if (articles.length === recentArticles.slice(0,10).length) {
+                  res.send(Mustache.render(page, {users: users, categories: categories, articles: assignDivs(articles, 3)}));
+                }
+              })
             })
           })
         })
@@ -51,18 +54,23 @@ app.get('/', function(req, res){
   })
 })
 
-app.get('/categories', function(req, res){
+app.get('/categories', function(req,res){
+  if (req.query.category) res.redirect('/categories/' + req.query.category);
+})
+
+app.get('/categories/:id', function(req, res){
   fs.readFile('./views/category.html', 'utf8', function(err, page){
-    db.all("SELECT name FROM categories WHERE id = " + req.query.category + ";", function(err, category){      
-      db.all("SELECT * FROM articles WHERE category_id = " + req.query.category + ";", function(err, categoryArticles){
+    db.all("SELECT name FROM categories WHERE id = " + req.params.id + ";", function(err, category){      
+      db.all("SELECT * FROM articles WHERE category_id = " + req.params.id + ";", function(err, categoryArticles){
         var articles = [];
         categoryArticles.forEach(function(article){
           db.all("SELECT * FROM users WHERE id = " + article.user_id + ";", function(err, user){
             article["author"] = user[0].name;
             article["content"] = stripMd(article.content.slice(0,150)) + "...";
             article["user_id"] = user[0].id;
+            article["creation_date"] = new Date(article.creation_date).toString().slice(0,21);
             articles.push(article);
-            if (articles.length === categoryArticles.length) res.send(Mustache.render(page, {category: category[0].name, articles: articles})); 
+            if (articles.length === categoryArticles.length) res.send(Mustache.render(page, {category: category[0].name, articles: assignDivs(articles,3)})); 
           })
         })
       })
@@ -145,6 +153,10 @@ app.get('/articles/:id/edits', function(req, res){
       })
     })
   })
+})
+
+app.get('/users', function(req,res){
+  if (req.query.user) res.redirect('/users/' + req.query.user);
 })
 
 app.get('/users/:id', function(req, res){

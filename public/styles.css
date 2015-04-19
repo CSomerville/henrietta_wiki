@@ -57,10 +57,33 @@ table {
 
 body {
   background-color: rgba(247,150,169,1);
+  font-family: baskerville;
+}
+
+a {
+  text-decoration: none;
+  color: black;
 }
 
 .whole {
   font-size: 0;
+  width: 1140px;
+  margin: 0 auto;
+}
+
+p {
+  font-size: 16px;
+  padding: 5px;
+}
+
+h2, h3 {
+  padding: 5px;
+}
+
+h1 {
+  text-align: center;
+  font-size: 36px;
+  padding-top: 60px;
 }
 
 .gold, .green {
@@ -68,15 +91,20 @@ body {
   margin-bottom: -95px;
 }
 
+button:hover, a:hover {
+  color: gray;
+}
+
 .gold .top {
   width: 0;
-  border-bottom: 95px solid rgba(255,223,105,1);
+  border-bottom: 95px solid rgba(255,205,105,1);  
   border-left: 190px solid transparent;
   border-right: 190px solid transparent;
 }
+
 .gold .bottom {
   width: 0;
-  border-top: 95px solid rgba(255,223,105,1);
+  border-top: 95px solid rgba(255,205,105,1);  
   border-left: 190px solid transparent;
   border-right: 190px solid transparent;
 }
@@ -84,7 +112,7 @@ body {
 .gold .rec {
   width: 380px;
   height: 190px;
-  background-color: rgba(255,223,105,1);
+  background-color: rgba(255,205,105,1);  
   display: inline-block;
   overflow: auto;
   font-size: 24px;
@@ -112,10 +140,24 @@ body {
   font-size: 24px;
 }
 
+h4 {
+  font-size: 16px;
+  padding: 5px;
+}
 
-gold rgba(255,223,105)
-green rgba(112,254,171)
+form {
+  padding: 5px;
+}
 
+button, select {
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
+}
+
+#indexforms {
+  text-align: center;
+}
 
 .gold.a, .gold.f, .gold.k, .green.a, .green.f, .green.k {
   clear: left;
