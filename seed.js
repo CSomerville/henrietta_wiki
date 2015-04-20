@@ -30,11 +30,25 @@ function markdownify(raw) {
   return array.join("");
 }
 
-function randoDateTime() {
+function randoDateTime(first) {
+  if (typeof first === 'undefined') first = '01/01/2015';
   var last = Date.parse('04/01/2015');
-  var first = Date.parse('01/01/2015');
+  first = Date.parse(first);
   var range = last - first;
   return (Math.floor(Math.random() * range)) + first;
+}
+
+function editText(text) {
+  var arr = text.split(".");
+  var index = Math.floor(Math.random() * arr.length);
+  var ipsum = ipsumJunk.split(".")
+  var newText = [];
+  if (Math.floor(Math.random() * 2) === 0) {
+    newText = arr.slice(0,index).join(".") + ipsum[Math.floor(Math.random() * ipsum.length)] + arr.slice(index).join(".")
+  } else {
+    newText = arr.slice(0, index-1).join(".") + arr.slice(index);
+  }
+  return newText.replace(/'/g, "''");
 }
 
 
@@ -62,9 +76,13 @@ db. serialize(function(){
   hbr.forEach(function(title){
     db.run("INSERT INTO articles (creation_date, subject, category_id, content, user_id) VALUES (" + randoDateTime() + ",'"+ title +"', "+ (Math.floor(Math.random() * 5) + 1) + ", '" + markdownify(randStart(ipsumJunk)) +"',"+ (Math.floor(Math.random() * 10) + 1) + ");");    
   })
-
-  db.run("INSERT INTO edits (edit_date, article_id, user_id) VALUES (" + Date.parse('01/01/3000') + ", 1, 2);");
-  db.run("INSERT INTO edits (edit_date, article_id, user_id) VALUES (" + Date.parse('01/03/3000') + ", 1, 2);");
-  db.run("INSERT INTO edits (edit_date, article_id, user_id) VALUES (" + Date.parse('02/14/3010') + ", 3, 1);");
-
+  for (var i = 0; i < 40; i++) {
+    db.all("SELECT * FROM articles;", function(err, articles){
+      db.all("SELECT * FROM users;", function(err, users){
+        var article = articles[Math.floor(Math.random() * articles.length)];
+        var user = users[Math.floor(Math.random() * users.length)];
+        db.run("INSERT INTO edits (edit_date, article_id, prev_content, new_content, user_id) VALUES (" + randoDateTime(new Date(article.creation_date)) + "," + article.id + ",'" + article.content.replace(/'/g, "''") + "','" + editText(article.content) + "'," + user.id + ");");
+      })
+    })
+  }
 })
