@@ -1,5 +1,6 @@
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('./wiki.db');
+var marked = require('marked')
 
 var henri = {};
 module.exports = henri;
@@ -7,11 +8,11 @@ module.exports = henri;
 henri.Article = function(article){
   this.id = article.id,
   this.creation_date = article.creation_date,
-  this.niceCreationDate = new Date(article.creation_date).toString().slice(0,21);
+  this.niceCreationDate = new Date(article.creation_date).toString().slice(0,21),
   this.subject = article.subject,
   this.category_id = article.category_id,
   this.content = article.content,
-  this.stubContent = (article.content.slice(0,150) + "...").replace(/\n|\*|\#/g, "");
+  this.stubContent = (article.content.slice(0,150) + "...").replace(/\n|\*|\#/g, ""),
   this.user_id = article.user_id,
   this.getCategoryName = function(article, cb) {
     db.all("SELECT name FROM categories WHERE id = " + this.category_id + ";", function(err, name){
@@ -25,6 +26,12 @@ henri.Article = function(article){
       cb();
     })
   },
+  this.markifyContent = function(article, cb){
+    marked(article.content, function(err, html){
+      article.content = html;
+      cb();
+    })
+  }
   this.getLastEdit = function(article, cb) {
     db.all("SELECT * FROM edits WHERE article_id = " + this.id + " ORDER BY edit_date DESC;", function(err, edits){
       article.lastEdit = edits[0];
@@ -58,6 +65,22 @@ henri.Category = function(category) {
       articles.forEach(function(eachArticle){
         category.articles.push(new henri.Article(eachArticle));
       })
+      cb();
+    })
+  }
+}
+
+henri.Edit = function(edit) {
+  this.editId = edit.id,
+  this.editDate = edit.edit_date,
+  this.niceEditDate = new Date(edit.edit_date).toString().slice(0,21),
+  this.prevContent = edit.prev_content,
+  this.newContent = edit.new_content,
+  this.editArticleId = edit.article_id,
+  this.editAuthorId = edit.user_id,
+  this.getEditAuthor = function(edit, cb) {
+    db.all("SELECT name FROM users WHERE id = " + edit.editAuthorId + ";", function(err, user){
+      edit.editAuthor = user[0].name;
       cb();
     })
   }

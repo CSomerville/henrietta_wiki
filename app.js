@@ -61,7 +61,6 @@ app.get('/categories/:id', function(req, res){
     db.all("SELECT * FROM categories WHERE id = " + req.params.id + ";", function(err, category){
       category = new henri.Category(category[0]);
       category.getArticles(category, function(){
-        console.log(category)
         var articles = [];
         category.articles.forEach(function(article){
           article.getAuthorName(article, function(){
@@ -90,26 +89,18 @@ app.get('/articles/new', function(req,res){
 app.get('/articles/:id', function(req,res){
   fs.readFile('./views/show.html', 'utf8', function(err, page){
     db.all("SELECT * FROM articles WHERE id = " + req.params.id + ";", function(err, article){
-      db.all("SELECT name FROM users WHERE id = " + article[0].user_id + ";", function(err, user){
-        db.all("SELECT name FROM categories WHERE id = " + article[0].category_id + ";", function(err, category){
-          db.all("SELECT * FROM edits WHERE article_id = " + req.params.id + " ORDER BY edit_date DESC;", function(err, edits){
-            article[0]["category"] = category[0].name;
-            article[0]["author"] = user[0].name;
-            if (edits[0]) {
-              db.all("SELECT name FROM users WHERE id = " + edits[0].user_id + ";", function(err, edit_user){
-                article[0]["last_edit_date"] = new Date(edits[0].edit_date).toString().slice(0,21);
-                article[0]["last_edit_author"] = edit_user[0].name;
-                marked(article[0].content, function(err, html){
-                  article[0]["content"] = html;
-                  res.send(Mustache.render(page, article[0]));                        
-                })
+      article = new henri.Article(article[0]);
+      article.getAuthorName(article, function(){
+        article.getCategoryName(article, function(){
+          article.markifyContent(article, function(){
+            article.getLastEdit(article, function(){
+              edit = new henri.Edit(article.lastEdit);
+              edit.getEditAuthor(edit, function(){
+                article.editAuthor = edit.editAuthor;
+                article.niceEditDate = edit.niceEditDate;
+                res.send(Mustache.render(page, article));                            
               })
-            } else {
-              marked(article[0].content, function(err, html){
-                article[0]["content"] = html;
-                res.send(Mustache.render(page, article[0]));                        
-              })
-            }            
+            })
           })
         })
       })
@@ -161,21 +152,36 @@ app.get('/users', function(req,res){
 app.get('/users/:id', function(req, res){
   fs.readFile('./views/user.html', 'utf8', function(err, page){
     db.all("SELECT * FROM users WHERE id = " + req.params.id + ";", function(err, user){
-      db.all("SELECT * FROM articles WHERE user_id = " + req.params.id + ";", function(err, userArticles){
+      user = new henri.User(user[0]);
+      user.getArticles(user, function(){
         var articles = [];
-        userArticles.forEach(function(article){
-          db.all("SELECT name FROM categories WHERE id = " + article.category_id + ";", function(err, category){
-            article["category"] = category[0].name;
-            article["content"] = stripMd(article.content.slice(0,150)) + "...";
-            article["creation_date"] = new Date(article.creation_date).toString().slice(0,21);
+        user.articles.forEach(function(article){
+          article.getCategoryName(article, function(){
             articles.push(article);
-            if (articles.length === userArticles.length) {
-              user[0]["articles"] = assignDivs(articles, 3);
-              res.send(Mustache.render(page, user[0]))
+            if (articles.length === user.articles.length) {
+              user.articles = assignDivs(articles, 3);
+              res.send(Mustache.render(page, user));
             }
           })
         })
       })
+
+
+      // db.all("SELECT * FROM articles WHERE user_id = " + req.params.id + ";", function(err, userArticles){
+      //   var articles = [];
+      //   userArticles.forEach(function(article){
+      //     db.all("SELECT name FROM categories WHERE id = " + article.category_id + ";", function(err, category){
+      //       article["category"] = category[0].name;
+      //       article["content"] = stripMd(article.content.slice(0,150)) + "...";
+      //       article["creation_date"] = new Date(article.creation_date).toString().slice(0,21);
+      //       articles.push(article);
+      //       if (articles.length === userArticles.length) {
+      //         user[0]["articles"] = assignDivs(articles, 3);
+      //         res.send(Mustache.render(page, user[0]))
+      //       }
+      //     })
+      //   })
+      // })
     })
   })
 })
