@@ -14,6 +14,7 @@ henri.Article = function(article){
   this.content = article.content,
   this.stubContent = (article.content.slice(0,150) + "...").replace(/\n|\*|\#/g, ""),
   this.user_id = article.user_id,
+  this.edits = [],
   this.getCategoryName = function(article, cb) {
     db.all("SELECT name FROM categories WHERE id = " + this.category_id + ";", function(err, name){
       article.categoryName = name[0].name;
@@ -33,8 +34,16 @@ henri.Article = function(article){
     })
   }
   this.getLastEdit = function(article, cb) {
-    db.all("SELECT * FROM edits WHERE article_id = " + this.id + " ORDER BY edit_date DESC;", function(err, edits){
+    db.all("SELECT * FROM edits WHERE article_id = " + article.id + " ORDER BY edit_date DESC;", function(err, edits){
       article.lastEdit = edits[0];
+      cb();
+    })
+  }
+  this.getEdits = function(article, cb) {
+    db.all("select * FROM edits WHERE article_id = " + article.id + ";", function(err, edits){
+      edits.forEach(function(edit){
+        article.edits.push(new henri.Edit(edit));
+      })
       cb();
     })
   }

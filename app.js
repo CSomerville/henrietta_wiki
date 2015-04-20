@@ -124,23 +124,37 @@ app.get('/articles/:id/edit', function(req,res){
 
 app.get('/articles/:id/edits', function(req, res){
   fs.readFile('./views/edit_history.html', 'utf8', function(err, page){
-    db.all("SELECT * FROM edits WHERE article_id = " + req.params.id + ";", function(err, history){
-      db.all("SELECT * FROM articles WHERE id = " + req.params.id + ";", function(err, article){
-        db.all("SELECT * FROM users WHERE id = " + article[0].user_id + ";", function(err, user){
-          article[0]["author"] = user[0].name;
-          article[0]["creation_date"] = new Date(article[0].creation_date).toString().slice(0,21);
-          var edits = [];
-          history.forEach(function(edit){
-            db.all("SELECT name FROM users WHERE id = " + edit.user_id + ";", function(err, user){
-              edits.push({user: user[0].name, edit_date: new Date(edit.edit_date).toString().slice(0,21)});
-              if (edits.length === history.length) {
-                article[0]["edits"] = edits;
-                res.send(Mustache.render(page, article[0]));
-              }   
-            })
+    db.all("SELECT * FROM articles WHERE id = " + req.params.id + ";", function(err, article){
+      article = new henri.Article(article[0]);
+      article.getEdits(article, function(){
+        var edits = [];
+        article.edits.forEach(function(edit){
+          edit.getEditAuthor(edit, function(){
+            edits.push(edit);
+            if (edits.length === article.edits.length) {
+              article.edits = assignDivs(edits, 3);
+              res.send(Mustache.render(page, article));
+            }
           })
         })
       })
+        // db.all("SELECT * FROM edits WHERE article_id = " + req.params.id + ";", function(err, history){
+      //   db.all("SELECT * FROM users WHERE id = " + article[0].user_id + ";", function(err, user){
+      //     article[0]["author"] = user[0].name;
+      //     article[0]["creation_date"] = new Date(article[0].creation_date).toString().slice(0,21);
+      //     var edits = [];
+      //     history.forEach(function(edit){
+      //       db.all("SELECT name FROM users WHERE id = " + edit.user_id + ";", function(err, user){
+      //         edits.push({user: user[0].name, edit_date: new Date(edit.edit_date).toString().slice(0,21)});
+      //         edits = assignDivs(edits, 3)
+      //         if (edits.length === history.length) {
+      //           article[0]["edits"] = edits;
+      //           res.send(Mustache.render(page, article[0]));
+      //         }   
+      //       })
+      //     })
+      //   })
+      // })
     })
   })
 })
@@ -165,23 +179,6 @@ app.get('/users/:id', function(req, res){
           })
         })
       })
-
-
-      // db.all("SELECT * FROM articles WHERE user_id = " + req.params.id + ";", function(err, userArticles){
-      //   var articles = [];
-      //   userArticles.forEach(function(article){
-      //     db.all("SELECT name FROM categories WHERE id = " + article.category_id + ";", function(err, category){
-      //       article["category"] = category[0].name;
-      //       article["content"] = stripMd(article.content.slice(0,150)) + "...";
-      //       article["creation_date"] = new Date(article.creation_date).toString().slice(0,21);
-      //       articles.push(article);
-      //       if (articles.length === userArticles.length) {
-      //         user[0]["articles"] = assignDivs(articles, 3);
-      //         res.send(Mustache.render(page, user[0]))
-      //       }
-      //     })
-      //   })
-      // })
     })
   })
 })
