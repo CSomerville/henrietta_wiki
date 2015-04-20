@@ -6,6 +6,7 @@ var marked = require('marked');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
+var henri = require('./henri.js');
 
 var db = new sqlite3.Database('./wiki.db')
 var app = express();
@@ -35,12 +36,9 @@ app.get('/', function(req, res){
         db.all("SELECT * FROM articles ORDER BY creation_date DESC;", function(err, recentArticles){
           var articles = [];
           recentArticles.slice(0,10).forEach(function(article){
-            db.all("SELECT name FROM users WHERE id =" + article.user_id + ";", function(err, user){
-              db.all("SELECT name FROM categories WHERE id =" + article.category_id + ";", function(err, category){
-                article["author"] = user[0].name;
-                article["category"] = category[0].name;
-                article["content"] = stripMd(article.content.slice(0,150)) + "...";
-                article["creation_date"] = new Date(article.creation_date).toString().slice(0,21);
+            article = new henri.Article(article);
+            article.getAuthorName(article, function(){
+              article.getCategoryName(article, function(){
                 articles.push(article);
                 if (articles.length === recentArticles.slice(0,10).length) {
                   res.send(Mustache.render(page, {users: users, categories: categories, articles: assignDivs(articles, 3)}));
@@ -60,17 +58,18 @@ app.get('/categories', function(req,res){
 
 app.get('/categories/:id', function(req, res){
   fs.readFile('./views/category.html', 'utf8', function(err, page){
-    db.all("SELECT name FROM categories WHERE id = " + req.params.id + ";", function(err, category){      
-      db.all("SELECT * FROM articles WHERE category_id = " + req.params.id + ";", function(err, categoryArticles){
+    db.all("SELECT * FROM categories WHERE id = " + req.params.id + ";", function(err, category){
+      category = new henri.Category(category[0]);
+      category.getArticles(category, function(){
+        console.log(category)
         var articles = [];
-        categoryArticles.forEach(function(article){
-          db.all("SELECT * FROM users WHERE id = " + article.user_id + ";", function(err, user){
-            article["author"] = user[0].name;
-            article["content"] = stripMd(article.content.slice(0,150)) + "...";
-            article["user_id"] = user[0].id;
-            article["creation_date"] = new Date(article.creation_date).toString().slice(0,21);
+        category.articles.forEach(function(article){
+          article.getAuthorName(article, function(){
             articles.push(article);
-            if (articles.length === categoryArticles.length) res.send(Mustache.render(page, {category: category[0].name, articles: assignDivs(articles,3)})); 
+            if (articles.length === category.articles.length) {
+              category.articles = assignDivs(articles, 3);
+              res.send(Mustache.render(page, category));
+            }
           })
         })
       })
@@ -78,44 +77,44 @@ app.get('/categories/:id', function(req, res){
   })
 })
 
-app.get('/articles/:id', function(req,res){
-  if (req.params.id === 'new') {
-    fs.readFile('./views/new.html', 'utf8', function(err, page){
-      db.all("SELECT * FROM users;", function(err, users){
-        db.all("SELECT * FROM categories;", function(err, categories){
-          res.send(Mustache.render(page, {users: users, categories: categories}));
-        })
+app.get('/articles/new', function(req,res){
+  fs.readFile('./views/new.html', 'utf8', function(err, page){
+    db.all("SELECT * FROM users;", function(err, users){
+      db.all("SELECT * FROM categories;", function(err, categories){
+        res.send(Mustache.render(page, {users: users, categories: categories}));
       })
     })
-  } else {
-    fs.readFile('./views/show.html', 'utf8', function(err, page){
-      db.all("SELECT * FROM articles WHERE id = " + req.params.id + ";", function(err, article){
-        db.all("SELECT name FROM users WHERE id = " + article[0].user_id + ";", function(err, user){
-          db.all("SELECT name FROM categories WHERE id = " + article[0].category_id + ";", function(err, category){
-            db.all("SELECT * FROM edits WHERE article_id = " + req.params.id + " ORDER BY edit_date DESC;", function(err, edits){
-              article[0]["category"] = category[0].name;
-              article[0]["author"] = user[0].name;
-              if (edits[0]) {
-                db.all("SELECT name FROM users WHERE id = " + edits[0].user_id + ";", function(err, edit_user){
-                  article[0]["last_edit_date"] = new Date(edits[0].edit_date).toString().slice(0,21);
-                  article[0]["last_edit_author"] = edit_user[0].name;
-                  marked(article[0].content, function(err, html){
-                    article[0]["content"] = html;
-                    res.send(Mustache.render(page, article[0]));                        
-                  })
-                })
-              } else {
+  })
+})
+
+app.get('/articles/:id', function(req,res){
+  fs.readFile('./views/show.html', 'utf8', function(err, page){
+    db.all("SELECT * FROM articles WHERE id = " + req.params.id + ";", function(err, article){
+      db.all("SELECT name FROM users WHERE id = " + article[0].user_id + ";", function(err, user){
+        db.all("SELECT name FROM categories WHERE id = " + article[0].category_id + ";", function(err, category){
+          db.all("SELECT * FROM edits WHERE article_id = " + req.params.id + " ORDER BY edit_date DESC;", function(err, edits){
+            article[0]["category"] = category[0].name;
+            article[0]["author"] = user[0].name;
+            if (edits[0]) {
+              db.all("SELECT name FROM users WHERE id = " + edits[0].user_id + ";", function(err, edit_user){
+                article[0]["last_edit_date"] = new Date(edits[0].edit_date).toString().slice(0,21);
+                article[0]["last_edit_author"] = edit_user[0].name;
                 marked(article[0].content, function(err, html){
                   article[0]["content"] = html;
                   res.send(Mustache.render(page, article[0]));                        
                 })
-              }            
-            })
+              })
+            } else {
+              marked(article[0].content, function(err, html){
+                article[0]["content"] = html;
+                res.send(Mustache.render(page, article[0]));                        
+              })
+            }            
           })
         })
       })
     })
-  }
+  })
 })
 
 app.get('/articles/:id/edit', function(req,res){
@@ -163,7 +162,6 @@ app.get('/users/:id', function(req, res){
   fs.readFile('./views/user.html', 'utf8', function(err, page){
     db.all("SELECT * FROM users WHERE id = " + req.params.id + ";", function(err, user){
       db.all("SELECT * FROM articles WHERE user_id = " + req.params.id + ";", function(err, userArticles){
-        console.log(userArticles);
         var articles = [];
         userArticles.forEach(function(article){
           db.all("SELECT name FROM categories WHERE id = " + article.category_id + ";", function(err, category){
