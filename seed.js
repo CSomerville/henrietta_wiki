@@ -20,7 +20,7 @@ function markdownify(raw) {
         array[index] = "\n###" + sentence + ".\n\n";
         break;
       case 1:
-        array[index] = "\n*" + sentence.split(",").join(".\n*") + ".\n\n";
+        array[index] = "\n* " + sentence.split(",").join(".\n*") + ".\n\n";
         break;
       default:
         array[index] = sentence + ".";
