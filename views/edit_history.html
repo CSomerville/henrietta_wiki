@@ -24,7 +24,7 @@
     <div class="gold">
       <div class="top"></div>
       <div class="rec">
-        <h1>Created by {{author}} on {{niceCreationDate}}.</h1>
+        <h1>Created by {{authorName}} on {{niceCreationDate}}.</h1>
       </div>
       <div class="bottom"></div>
     </div>
@@ -32,9 +32,11 @@
     {{#edits}}
       <div class="{{colorClass}} {{divClass}}">
         <div class="top"></div>
+          <a href="/articles/{{id}}/edits/{{editId}}">
           <div class="rec">
               <li><h1>Edited on {{niceEditDate}} by {{editAuthor}}</h1></li>
           </div>
+          </a>
         </a>
       <div class="bottom"></div>
     </div>

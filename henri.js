@@ -35,7 +35,7 @@ henri.Article = function(article){
   }
   this.getLastEdit = function(article, cb) {
     db.all("SELECT * FROM edits WHERE article_id = " + article.id + " ORDER BY edit_date DESC;", function(err, edits){
-      article.lastEdit = edits[0];
+      article.lastEdit = (typeof edits[0] === 'undefined')? "No one has edited this article yet." : edits[0];
       cb();
     })
   }

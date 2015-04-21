@@ -23,7 +23,28 @@
     </div>
     <div class="gold">
       <div class="top"></div>
-      <div class="rec"></div>
+      <div class="rec indexforms">
+        <h2>Browse by:</h2>
+        <form method="GET" action="categories/">
+          category:
+          <select name="category">
+            {{#categories}}
+              <option value="{{id}}">{{name}}</option>
+            {{/categories}}
+          </select>
+          <button>Browse</button>
+        </form>
+        <h2>Or:</h2>
+        <form method="GET" action="users/">
+          author:
+          <select name="user">
+            {{#users}}
+              <option value="{{id}}">{{name}}</option>
+            {{/users}}
+          </select>
+          <button>Browse</button>
+        </form>
+      </div>
       <div class="bottom"></div>
     </div>
     <ul>
