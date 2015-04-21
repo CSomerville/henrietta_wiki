@@ -31,7 +31,39 @@
 
 ####2. Wire Frame
 ![wireframe](./wireframe.jpg)
+
 ####3. ERD
 ![ERD](./erd.jpg)
+
+####4. Modules used
+  * expressjs is a lightweight web framework written with node's http library.
+  * sqlite3 is a node module for running SQLite commands.
+  * Mustache does front-end templating.
+  * marked parses a markdown string and spits out html.
+  * morgan does server logging.
+  * body-parser parses the body of a post request.
+  * method-override allows html forms to issue put and delete requests.
+  * henri is a module of constructor functions which make interacting with wiki.db more pleasant.
+
+####5. Instructions for deployment
+  * Clone the git repository.
+  * In the repository root directory, run
+  ```bash
+  $ npm install
+  ```
+  * Touch a database file called wiki.db
+  ```bash
+  $ touch wiki.db
+  ```
+  * Run the schema and seed files
+  ```bash
+  $ node schema.js
+  $ node seed.js
+  ```
+  * Now the app is ready to deploy.
+  ```bash
+  $ node app.js
+  ```
+
 ####5. Link to the project.
 [This is the link to the project](104.131.60.34:3000)
