@@ -66,4 +66,5 @@
   ```
 
 ####5. Link to the project.
-[This is the link to the project](104.131.60.34:3000)
+[DO]: http://104.131.60.34:3000/
+[This is the link to the project][DO]
