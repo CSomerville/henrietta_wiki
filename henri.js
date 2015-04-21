@@ -57,9 +57,13 @@ henri.User = function(user) {
   this.articles = [],
   this.getArticles = function(user, cb) {
     db.all("SELECT * FROM articles WHERE user_id = " + user.userId + ";", function(err, articles){
-      articles.forEach(function(eachArticle){
-        user.articles.push(new henri.Article(eachArticle));
-      })
+      if (typeof articles[0] === 'undefined'){
+        user.articles = articles[0];
+      } else {
+        articles.forEach(function(eachArticle){
+          user.articles.push(new henri.Article(eachArticle));
+        })        
+      }
       cb();
     })
   }
@@ -71,9 +75,13 @@ henri.Category = function(category) {
   this.articles = [],
   this.getArticles = function(category, cb) {
     db.all("SELECT * FROM articles WHERE category_id = " + category.categoryId + ";", function(err, articles){
-      articles.forEach(function(eachArticle){
-        category.articles.push(new henri.Article(eachArticle));
-      })
+      if (typeof articles[0] === 'undefined') {
+        category.articles = articles[0];
+      } else {
+        articles.forEach(function(eachArticle){
+          category.articles.push(new henri.Article(eachArticle));
+        })
+      }
       cb();
     })
   }

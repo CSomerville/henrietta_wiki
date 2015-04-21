@@ -34,6 +34,7 @@ app.get('/', function(req, res){
     db.all("SELECT * FROM categories;", function(err, categories){
       db.all("SELECT * FROM users;", function(err, users){
         db.all("SELECT * FROM articles ORDER BY creation_date DESC;", function(err, recentArticles){
+          if (typeof recentArticles[0] === 'undefined') res.send(Mustache.render(page, {users: users, categories: categories}));
           var articles = [];
           recentArticles.slice(0,10).forEach(function(article){
             article = new henri.Article(article);
@@ -62,19 +63,24 @@ app.get('/categories/:id', function(req, res){
       db.all("SELECT * FROM users;", function(err, users){
         db.all("SELECT * FROM categories WHERE id = " + req.params.id + ";", function(err, category){
           category = new henri.Category(category[0]);
+          category.categories = categories;
+          category.users = users;
           category.getArticles(category, function(){
-            var articles = [];
-            category.articles.forEach(function(article){
-              article.getAuthorName(article, function(){
-                articles.push(article);
-                if (articles.length === category.articles.length) {
-                  category.articles = assignDivs(articles, 3);
-                  category.categories = categories;
-                  category.users = users;
-                  res.send(Mustache.render(page, category));
-                }
-              })
-            })
+            console.log(typeof category.articles);
+            if (typeof category.articles === 'undefined') {
+              res.send(Mustache.render(page, {users: users, categories: categories}));
+            } else {
+              var articles = [];
+              category.articles.forEach(function(article){
+                article.getAuthorName(article, function(){
+                  articles.push(article);
+                  if (articles.length === category.articles.length) {
+                    category.articles = assignDivs(articles, 3);
+                    res.send(Mustache.render(page, category));
+                  }
+                })
+              })    
+            }
           })          
         })
       })
@@ -179,16 +185,21 @@ app.get('/users/:id', function(req, res){
     db.all("SELECT * FROM users WHERE id = " + req.params.id + ";", function(err, user){
       user = new henri.User(user[0]);
       user.getArticles(user, function(){
-        var articles = [];
-        user.articles.forEach(function(article){
-          article.getCategoryName(article, function(){
-            articles.push(article);
-            if (articles.length === user.articles.length) {
-              user.articles = assignDivs(articles, 3);
-              res.send(Mustache.render(page, user));
-            }
-          })
-        })
+        console.log(user.articles)
+        if (typeof user.articles === 'undefined') {
+          res.send(Mustache.render(page, user));
+        } else {
+          var articles = [];
+          user.articles.forEach(function(article){
+            article.getCategoryName(article, function(){
+              articles.push(article);
+              if (articles.length === user.articles.length) {
+                user.articles = assignDivs(articles, 3);
+                res.send(Mustache.render(page, user));
+              }
+            })
+          })          
+        }
       })
     })
   })
