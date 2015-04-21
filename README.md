@@ -65,6 +65,6 @@
   $ node app.js
   ```
 
-####5. Link to the project.
+####6. Link to the project.
 [DO]: http://104.131.60.34:3000/
 [This is the link to the project][DO]
