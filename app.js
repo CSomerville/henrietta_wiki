@@ -160,7 +160,7 @@ app.get('/articles/:id/edits/:editid', function(req, res){
         article = new henri.Article(article[0]);
         edit = new henri.Edit(edit[0]);
         edit.getEditAuthor(edit, function(){
-          article.markifyContent(article, function(){
+          edit.markifyContent(edit, function(){
             for (var key in edit) {article[key] = edit[key];}
             res.send(Mustache.render(page, article));            
           })
@@ -200,8 +200,12 @@ app.post('/articles', function(req, res){
 })
 
 app.put('/articles/:id', function(req, res){
-  db.run("UPDATE articles SET content = '" + req.body.content.replace(/'/g, "''") + "' WHERE id=" + req.params.id + ";");
-  db.run("INSERT INTO edits (edit_date, article_id, user_id) VALUES (" + Date.parse(new Date()) + "," + req.params.id + "," + req.body.user + ");")
+  db.all("SELECT * FROM articles WHERE id =" + req.params.id + ";", function(err, article){
+    db.serialize(function(){
+      db.run("INSERT INTO edits (edit_date, article_id, prev_content, new_content, user_id) VALUES (" + Date.parse(new Date()) + "," + req.params.id + ",'" + article[0].content.replace(/'/g, "''") + "','" + req.body.content.replace(/'/g, "''") + "'," + req.body.user + ");")
+      db.run("UPDATE articles SET content = '" + req.body.content.replace(/'/g, "''") + "' WHERE id=" + req.params.id + ";");      
+    })    
+  })
   res.redirect('/articles/' + req.params.id);
 })
 

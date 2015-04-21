@@ -32,13 +32,13 @@ henri.Article = function(article){
       article.content = html;
       cb();
     })
-  }
+  },
   this.getLastEdit = function(article, cb) {
     db.all("SELECT * FROM edits WHERE article_id = " + article.id + " ORDER BY edit_date DESC;", function(err, edits){
       article.lastEdit = (typeof edits[0] === 'undefined')? "No one has edited this article yet." : edits[0];
       cb();
     })
-  }
+  },
   this.getEdits = function(article, cb) {
     db.all("select * FROM edits WHERE article_id = " + article.id + ";", function(err, edits){
       edits.forEach(function(edit){
@@ -92,5 +92,11 @@ henri.Edit = function(edit) {
       edit.editAuthor = user[0].name;
       cb();
     })
-  }
+  },
+  this.markifyContent = function(edit, cb){
+    marked(edit.newContent, function(err, html){
+      edit.newContent = html;
+      cb();
+    })
+  }  
 }
